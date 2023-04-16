@@ -1,3 +1,8 @@
+/*
+    Author: Nithin Nakka
+    Email: nithin.nakka@gmail.com
+*/
+
 #ifndef __INDEXER_H__
 #define __INDEXER_H__
 

@@ -1,10 +1,15 @@
+/*
+    Author: Nithin Nakka
+    Email: nithin.nakka@gmail.com
+*/
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "./indexer.h"
+#include "indexer.h"
 
 int main()
 {

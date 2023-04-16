@@ -1,3 +1,8 @@
+/*
+    Author: Nithin Nakka
+    Email: nithin.nakka@gmail.com
+*/
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
