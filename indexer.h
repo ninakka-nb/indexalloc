@@ -44,7 +44,6 @@ indexer_t *indexer_create(int start, int range);
 int index_range_alloc(indexer_t *indexer, int block_size);
 void index_range_dealloc(indexer_t *indexer, int start_index);
 void print_indexer(indexer_t *indexer);
-bool print_block(void *data);
 
 #define MAX_block_list_t 1024
 

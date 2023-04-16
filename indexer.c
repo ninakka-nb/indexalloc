@@ -116,7 +116,8 @@ int index_range_alloc(indexer_t *indexer, int range)
         avl_remove(indexer->free_blocks_start, block);
         avl_insert(indexer->free_blocks_start, new_free_block);
         avl_insert(indexer->free_blocks_end, new_free_block);
-        next_free_range_block = avl_locate_int(indexer->free_blocks_range, new_free_block->range);
+        next_free_range_block = avl_locate_int(indexer->free_blocks_range,
+                                               new_free_block->range);
         new_free_block->next = next_free_range_block;
         avl_insert(indexer->free_blocks_range, new_free_block);
     }
@@ -173,7 +174,8 @@ void index_range_dealloc(indexer_t *indexer, int start)
         PRINT_TRACE("No prev or next blocks");
         avl_insert(indexer->free_blocks_start, block);
         avl_insert(indexer->free_blocks_end, block);
-        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, block->range);
+        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range,
+                                                     block->range);
         block->next = next_range_block;
         avl_insert(indexer->free_blocks_range, block);
     }
@@ -182,8 +184,10 @@ void index_range_dealloc(indexer_t *indexer, int start)
         PRINT_TRACE("Next block found");
         avl_remove_int(indexer->free_blocks_start, next_block->start);
 
-        curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, next_block->range);
-        if ((curr_range_block->start == next_block->start) && (curr_range_block->end == next_block->end))
+        curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range,
+                                                     next_block->range);
+        if ((curr_range_block->start == next_block->start) 
+                && (curr_range_block->end == next_block->end))
         {
             if (curr_range_block->next != NULL)
             {
@@ -191,7 +195,9 @@ void index_range_dealloc(indexer_t *indexer, int start)
             }
         } else {
             next_range_block = curr_range_block;
-            while (next_range_block != NULL && (next_range_block->start == next_block->start) && (next_range_block->end == next_block->end))
+            while (next_range_block != NULL 
+                    && (next_range_block->start == next_block->start) 
+                    && (next_range_block->end == next_block->end))
             {
                 prev_range_block = next_range_block;
                 next_range_block = next_range_block->next;
@@ -209,7 +215,8 @@ void index_range_dealloc(indexer_t *indexer, int start)
         next_block->range += block->range;
         avl_insert(indexer->free_blocks_start, next_block);
 
-        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, next_block->range);
+        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, 
+                                                     next_block->range);
         next_block->next = next_range_block;
         avl_insert(indexer->free_blocks_range, next_block);
 
@@ -224,8 +231,10 @@ void index_range_dealloc(indexer_t *indexer, int start)
         if (next_block != NULL) {
             avl_remove_int(indexer->free_blocks_start, block->start);
             avl_remove_int(indexer->free_blocks_end, block->end);
-            curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, block->range);
-            if ((curr_range_block->start == block->start) && (curr_range_block->end == block->end))
+            curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range,
+                                                         block->range);
+            if ((curr_range_block->start == block->start) 
+                    && (curr_range_block->end == block->end))
             {
                 if (curr_range_block->next != NULL)
                 {
@@ -233,7 +242,9 @@ void index_range_dealloc(indexer_t *indexer, int start)
                 }
             } else {
                 next_range_block = curr_range_block;
-                while (next_range_block != NULL && (next_range_block->start == block->start) && (next_range_block->end == block->end))
+                while (next_range_block != NULL 
+                        && (next_range_block->start == block->start) 
+                        && (next_range_block->end == block->end))
                 {
                     prev_range_block = next_range_block;
                     next_range_block = next_range_block->next;
@@ -248,8 +259,10 @@ void index_range_dealloc(indexer_t *indexer, int start)
             }
         }
 
-        curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, prev_block->range);
-        if ((curr_range_block->start == prev_block->start) && (curr_range_block->end == prev_block->end))
+        curr_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, 
+                                                     prev_block->range);
+        if ((curr_range_block->start == prev_block->start) 
+                && (curr_range_block->end == prev_block->end))
         {
             if (curr_range_block->next != NULL)
             {
@@ -257,7 +270,9 @@ void index_range_dealloc(indexer_t *indexer, int start)
             }
         } else {
             next_range_block = curr_range_block;
-            while (next_range_block != NULL && (next_range_block->start == prev_block->start) && (next_range_block->end == prev_block->end))
+            while (next_range_block != NULL 
+                    && (next_range_block->start == prev_block->start) 
+                    && (next_range_block->end == prev_block->end))
             {
                 prev_range_block = next_range_block;
                 next_range_block = next_range_block->next;
@@ -275,7 +290,8 @@ void index_range_dealloc(indexer_t *indexer, int start)
         prev_block->range += block->range;
         avl_insert(indexer->free_blocks_end, prev_block);
 
-        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range, prev_block->range);
+        next_range_block = (block_t *)avl_remove_int(indexer->free_blocks_range,
+                                                     prev_block->range);
         prev_block->next = next_range_block;
         avl_insert(indexer->free_blocks_range, prev_block);
 
@@ -286,12 +302,12 @@ void index_range_dealloc(indexer_t *indexer, int start)
 bool print_block(void *data)
 {
     block_t *block = (block_t *) data;
-    PRINT_INFO("Printing block: %p", block);
+    PRINT_INFO("\tPrinting block: %p", block);
     while (block != NULL) {
-        PRINT_INFO("\tBlock->start: %d", block->start);
-        PRINT_INFO("\tBlock->end: %d", block->end);
-        PRINT_INFO("\tBlock->range: %d", block->range);
-        PRINT_INFO("\tBlock->next: %p", block->next);
+        PRINT_INFO("\t\tBlock->start: %d", block->start);
+        PRINT_INFO("\t\tBlock->end: %d", block->end);
+        PRINT_INFO("\t\tBlock->range: %d", block->range);
+        PRINT_INFO("\t\tBlock->next: %p", block->next);
         block = block->next;
     }
 }
@@ -300,12 +316,12 @@ void print_indexer(indexer_t *indexer)
 {
     PRINT_INFO("Indexer start: %d", indexer->start);
     PRINT_INFO("Indexer range: %d", indexer->range);
-    PRINT_INFO("Indexer alloced blocks start");
+    PRINT_INFO("\tIndexer alloced blocks start");
     avl_scan(indexer->alloced_blocks_start, print_block);
-    PRINT_INFO("Indexer free blocks start");
+    PRINT_INFO("\tIndexer free blocks start");
     avl_scan(indexer->free_blocks_start, print_block);
-    PRINT_INFO("Indexer free blocks end");
+    PRINT_INFO("\tIndexer free blocks end");
     avl_scan(indexer->free_blocks_end, print_block);
-    PRINT_INFO("Indexer free blocks range");
+    PRINT_INFO("\tIndexer free blocks range");
     avl_scan(indexer->free_blocks_range, print_block);
 }
