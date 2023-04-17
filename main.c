@@ -50,5 +50,19 @@ int main()
     index_range_dealloc(indexer, 75);
     print_indexer(indexer);
 
+    PRINT_TRACE("Allocating 26 indices");
+    index_range_alloc(indexer, 26);
+    print_indexer(indexer);
+    index_range_alloc(indexer, 26);
+    print_indexer(indexer);
+    PRINT_TRACE("Deallocing 75 now");
+    index_range_dealloc(indexer, 75);
+    print_indexer(indexer);
+    PRINT_TRACE("Deallocing 11 now");
+    index_range_dealloc(indexer, 11);
+    print_indexer(indexer);
+    PRINT_TRACE("Deallocing 7 now");
+    index_range_dealloc(indexer, 7);
+    print_indexer(indexer);
     return 0;
 }

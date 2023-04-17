@@ -14,10 +14,16 @@ indexer_t *indexer_create(int start, int range)
     block_t *block = NULL;
     bool inserted = false;
 
+    if (start <= 0 || range <= 0)
+    {
+        PRINT_ERROR("Invalid values provided for start and range");
+        return NULL;
+    }
+
     indexer = (indexer_t *)malloc(sizeof(indexer_t));
     if (indexer == NULL)
     {
-        PRINT_ERROR("ERROR: OOM (Out of memory) - Unable to allocate indexer.");
+        PRINT_ERROR("OOM (Out of memory) - Unable to allocate indexer.");
         return NULL;
     }
     memset(indexer, 0, sizeof(indexer_t));
@@ -25,7 +31,7 @@ indexer_t *indexer_create(int start, int range)
     block = (block_t *)malloc(sizeof(block_t));
     if (block == NULL)
     {
-        PRINT_ERROR("ERROR: OOM (Out of memory) - Unable to allocate block.");
+        PRINT_ERROR("OOM (Out of memory) - Unable to allocate block.");
         free(indexer);
         return NULL;
     }
@@ -98,7 +104,8 @@ int index_range_alloc(indexer_t *indexer, int range)
     avl_remove_int(indexer->free_blocks_end, block->end);
     avl_remove_int(indexer->free_blocks_range, block->range);
     if (block->next != NULL) {
-        // There are multiple blocks with the same range. Pick the first one
+        // There are multiple blocks with the same range. Pop the first one
+        // and re-insert the remaining into the range avl
         next_free_range_block = block->next;
         avl_insert(indexer->free_blocks_range, next_free_range_block);
     }
@@ -109,7 +116,7 @@ int index_range_alloc(indexer_t *indexer, int range)
         new_free_block = (block_t *)malloc(sizeof(block_t));
         if (new_free_block == NULL)
         {
-            PRINT_ERROR("ERROR: OOM (Out of memory) - Unable to allocate new free block.");
+            PRINT_ERROR("OOM (Out of memory) - Unable to allocate new free block.");
             return -1;
         }
         memset(new_free_block, 0, sizeof(block_t));
@@ -118,7 +125,6 @@ int index_range_alloc(indexer_t *indexer, int range)
         new_free_block->end = block->end;
         new_free_block->range = tail_range;
 
-        avl_remove(indexer->free_blocks_start, block);
         avl_insert(indexer->free_blocks_start, new_free_block);
         avl_insert(indexer->free_blocks_end, new_free_block);
         next_free_range_block = avl_locate_int(indexer->free_blocks_range,
@@ -144,7 +150,7 @@ void index_range_dealloc(indexer_t *indexer, int start)
     block_t *prev_range_block = NULL;
     block_t *next_range_block = NULL;
 
-    if (start < 0)
+    if (start <= 0)
     {
         PRINT_ERROR("Invalid start index provided to free");
         return;
@@ -214,6 +220,7 @@ void index_range_dealloc(indexer_t *indexer, int start)
                 assert(0);
             }
             prev_range_block->next = next_range_block->next;
+            avl_insert(indexer->free_blocks_range, curr_range_block);
         }
 
         next_block->start = block->start;
@@ -261,6 +268,7 @@ void index_range_dealloc(indexer_t *indexer, int start)
                     assert(0);
                 }
                 prev_range_block->next = next_range_block->next;
+                avl_insert(indexer->free_blocks_range, curr_range_block);
             }
         }
 
@@ -289,6 +297,7 @@ void index_range_dealloc(indexer_t *indexer, int start)
                 assert(0);
             }
             prev_range_block->next = next_range_block->next;
+            avl_insert(indexer->free_blocks_range, curr_range_block);
         }
 
         prev_block->end = block->end;
